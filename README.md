@@ -1,10 +1,11 @@
 [![Build Status](https://travis-ci.org/phonetworks/pho-cli.svg?branch=master)](https://travis-ci.org/phonetworks/pho-cli)
 
-##Requirements
+## Requirements
 
-* PHP 5.6+
+* PHP 5.5+
+* [Box](https://github.com/box-project/box2)
 
-##How to release
+## How to release
 
 ```
 box build
