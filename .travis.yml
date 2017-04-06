@@ -22,7 +22,7 @@ matrix:
 
 before_install:
 - PHP=$TRAVIS_PHP_VERSION
-- if [[ ! $PHP = hhvm* ]]; phpenv config-rm xdebug.ini; fi
+- if [[ ! $PHP = hhvm* ]]; then phpenv config-rm xdebug.ini; fi
 - composer self-update
 
 install:
