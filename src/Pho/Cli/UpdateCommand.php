@@ -10,14 +10,14 @@ use Humbug\SelfUpdate\Updater;
 
 class UpdateCommand extends Command {
 
-  private $urlToGithubPagesPharFile = "";
-  private $urlToGithubPagesVersionFile = "";
+  private $urlToGithubPagesPharFile = "https://phonetworks.github.io/pho-cli/pho.phar";
+  private $urlToGithubPagesVersionFile = "https://phonetworks.github.io/pho-cli/pho.phar.version";
 
 	protected function configure()
     {
         $this
-            ->setName('hello')
-            ->setDescription('Say hello')
+            ->setName('update')
+            ->setDescription('Self updates the app.')
         ;
     }
 
@@ -30,15 +30,15 @@ class UpdateCommand extends Command {
         $result = $updater->update();
         if (! $result) {
             // No update needed!
-            exit 0;
+            exit(0);
         }
         $new = $updater->getNewVersion();
         $old = $updater->getOldVersion();
         printf('Updated from %s to %s', $old, $new);
-        exit 0;
+        exit(0);
       } catch (\Exception $e) {
         // Report an error!
-        exit 1;
+        exit(1);
       }
     }
 }
