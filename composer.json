@@ -2,10 +2,10 @@
     "require": {
         "symfony/console": "^3.2",
         "padraic/phar-updater": "*",
-        "php": "^5.6"
+        "php": ">=5.5"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.7"
+        "phpunit/phpunit": "~4.8"
     },
     "autoload": {
 	     "psr-4": {
