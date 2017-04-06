@@ -23,7 +23,7 @@ class UpdateCommand extends Command {
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-      $updater = new Updater();
+      $updater = new Updater(null, false);
       $updater->getStrategy()->setPharUrl($this->urlToGithubPagesPharFile);
       $updater->getStrategy()->setVersionUrl($this->urlToGithubPagesVersionFile);
       try {
