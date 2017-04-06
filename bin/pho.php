@@ -8,5 +8,5 @@ use Pho\Cli;
 
 $application = new Application('Pho', '0.1-dev');
 $application->add(new Cli\HelloCommand());
-$application->add(new Cli\UpdateCommand());
+//$application->add(new Cli\UpdateCommand());
 $application->run();

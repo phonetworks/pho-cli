@@ -6,7 +6,7 @@
     "src"
   ],
   "files": [
-    "LICENSE.md"
+    "LICENSE"
   ],
   "finder": [
     {
@@ -21,7 +21,7 @@
   ],
   "git-version": "package_version",
   "intercept": true,
-  "key": "/root/private.key",
+  "key": "/root/pho-cli-phar-private.pem",
   "main": "bin/pho.php",
   "output": "pho.phar",
   "stub": true
