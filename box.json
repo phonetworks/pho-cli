@@ -1,0 +1,28 @@
+{
+  "algorithm": "OPENSSL",
+  "chmod": "0755",
+  "compression": "GZ",
+  "directories": [
+    "src"
+  ],
+  "files": [
+    "LICENSE.md"
+  ],
+  "finder": [
+    {
+      "name": "*.php",
+      "exclude": [
+        "tests",
+        "test",
+        "Tests"
+      ],
+      "in": "vendor"
+    }
+  ],
+  "git-version": "package_version",
+  "intercept": true,
+  "key": "/root/private.key",
+  "main": "bin/pho.php",
+  "output": "pho.phar",
+  "stub": true
+}

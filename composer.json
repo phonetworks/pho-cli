@@ -1,0 +1,11 @@
+{
+    "require": {
+        "symfony/console": "^3.2",
+        "padraic/phar-updater": "*"
+    },
+    "autoload": {
+	     "psr-4": {
+		       "Pho\\Cli\\": "src/Pho/Cli/"
+	     }
+    }
+}
