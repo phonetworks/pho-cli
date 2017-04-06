@@ -1,0 +1,26 @@
+sudo: false
+language: php
+
+cache:
+  directories:
+  - $HOME/.composer/cache
+  - vendor
+
+matrix:
+  fast_finish: true
+  include:
+  - php: 7.1
+
+before_install:
+- phpenv config-rm xdebug.ini
+- composer self-update
+
+install:
+- travis_retry composer install --no-interaction
+- composer info -i
+
+script:
+#- ./vendor/bin/phpunit # If you have tests
+
+notifications:
+  email: true
