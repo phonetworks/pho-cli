@@ -30,14 +30,16 @@ class UpdateCommand extends Command {
         $result = $updater->update();
         if (! $result) {
             // No update needed!
+            $output->writeln('<comment>It\'s already up to date.</comment>');
             exit(0);
         }
         $new = $updater->getNewVersion();
         $old = $updater->getOldVersion();
-        printf('Updated from %s to %s', $old, $new);
+        $output->writeln(sprintf('<info>Updated from %s to %s</info>', $old, $new));
         exit(0);
       } catch (\Exception $e) {
         // Report an error!
+        $output->writeln('<error>There was an error!</error>');
         exit(1);
       }
     }
