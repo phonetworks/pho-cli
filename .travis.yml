@@ -21,15 +21,16 @@ matrix:
         - HHVMPHP7=1
 
 before_install:
-- phpenv config-rm xdebug.ini
-- composer self-update
+  - PHP=$TRAVIS_PHP_VERSION
+  - if [[ ! $PHP = hhvm* ]]; phpenv config-rm xdebug.ini; fi
+  - composer self-update
 
 install:
-- travis_retry composer install --no-interaction
-- composer info -i
+  - travis_retry composer install --no-interaction
+  - composer info -i
 
 script:
-#- ./vendor/bin/phpunit # If you have tests
+  #- ./vendor/bin/phpunit # If you have tests
 
 notifications:
   email: true
