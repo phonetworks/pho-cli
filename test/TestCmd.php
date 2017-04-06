@@ -11,15 +11,20 @@
 
 class TestCmd extends \PHPUnit\Framework\TestCase {
 
+    private $php;
+
     public function setUp() {
-      //echo "hello world";
+      $this->php = getenv("PHP_BIN");
     }
 
-    public function tearDown() {}
+    public function tearDown() {
+      unset($this->php);
+    }
 
     public function testHello() {
       $last_line = exec(
-        sprintf("php %s hello",
+        sprintf("%s %s hello",
+            escapeshellcmd($this->php),
             escapeshellarg(glob(__DIR__."/../bin/pho.php")[0])
         )
       );

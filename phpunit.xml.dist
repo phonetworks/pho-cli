@@ -7,6 +7,10 @@
          convertWarningsToExceptions="true"
 >
 
+  <php>
+    <env name="PHP_BIN" value="/usr/bin/env php" />
+  </php>
+
     <testsuites>
         <testsuite name="Pho CLI Test Suite">
             <directory>./test/TestCmd.php</directory>
