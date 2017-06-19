@@ -10,17 +10,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
-class BuildCommand extends Command {
+class BuildCommand extends Command
+{
 
-	protected function configure()
+    protected function configure()
     {
         $this
             ->setName('build')
             ->setDescription('Builds graphql schema into executable Pho')
             ->addArgument('source', InputArgument::OPTIONAL, 'The directory where the graphql schema resides.')
             ->addArgument('destination', InputArgument::OPTIONAL, 'The directory where the compiled Pho files will go.')
-            ->addArgument('extension', InputArgument::OPTIONAL, 'The extension to scan for graphql schema files.')
-        ;
+            ->addArgument('extension', InputArgument::OPTIONAL, 'The extension to scan for graphql schema files.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -28,12 +28,15 @@ class BuildCommand extends Command {
         $source = $input->getArgument('source');
         $destination = $input->getArgument('destination');
         $destination = $input->getArgument('extension');
-        if(empty($source)) 
+        if(empty($source)) { 
             $source = 'schema';
-        if(empty($destination)) 
+        }
+        if(empty($destination)) { 
             $destination = 'compiled';
-        if(empty($extension)) 
+        }
+        if(empty($extension)) { 
             $extension = 'pgql';
+        }
         if(!file_exists($source)) {            
             $output->writeln(sprintf('<error>The schema directory "%s" does not exist or is inaccessible.</error>', $source));
             exit(1);
@@ -47,7 +50,7 @@ class BuildCommand extends Command {
         $dir = scandir($source);
         $compiler = new \Pho\Compiler\Compiler();
         foreach($dir as $file) {
-            if(substr($file, -1 * (strlen(".".$extension)) ) == ".".$extension) {
+            if(substr($file, -1 * (strlen(".".$extension))) == ".".$extension) {
                 $compiler->compile($source."/".$file)->save(
                     $destination."/".str_replace(".".$extension, "", $file)
                 );

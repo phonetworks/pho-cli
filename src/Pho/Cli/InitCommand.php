@@ -10,15 +10,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
-class InitCommand extends Command {
+class InitCommand extends Command
+{
 
-	protected function configure()
+    protected function configure()
     {
         $this
             ->setName('init')
             ->setDescription('Initializes a new project')
-            ->addArgument('dir', InputArgument::REQUIRED, 'The directory where the application will be hosted.')
-        ;
+            ->addArgument('dir', InputArgument::REQUIRED, 'The directory where the application will be hosted.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
