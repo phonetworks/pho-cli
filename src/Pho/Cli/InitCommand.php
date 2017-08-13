@@ -24,6 +24,8 @@ class InitCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $composer = "php " . dirname(__FILE__).'/../../../bin/composer.phar ';
+
         $dir = $input->getArgument('destination');
         if(file_exists($dir)) {
             $output->writeln(sprintf('<error>The directory "%s" already exists.</error>', $dir));
@@ -34,7 +36,7 @@ class InitCommand extends Command
         
         $process = new Process(
             //sprintf('cd %s && echo "'.addslashes('{"minimum-stability":"dev"}').'" > composer.json && '.dirname(__FILE__).'/../../../vendor/bin/composer require phonetworks/pho-kernel', $dir)
-            sprintf('cp -pR '.dirname(__FILE__).'/../../../vendor/phonetworks/pho-kernel/* %s && cd %s && composer install', $dir, $dir)
+            sprintf('cp -pR '.dirname(__FILE__).'/../../../vendor/phonetworks/pho-kernel/* %s && cd %s && '.$composer.' install', $dir, $dir)
         );
         
         //$process->run();
@@ -66,7 +68,7 @@ eos
             chdir($dir);
             unlink($dir.DIRECTORY_SEPARATOR."composer.json");
             copy($dir.DIRECTORY_SEPARATOR."presets".DIRECTORY_SEPARATOR.$skeleton, $dir.DIRECTORY_SEPARATOR."composer.json");
-            $process = new Process("composer update");
+            $process = new Process($composer.' update');
             $process->start();
             foreach ($process as $type => $data) {
                 if ($process::OUT === $type) {
