@@ -13,6 +13,8 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 class BuildCommand extends Command
 {
 
+    protected $compiler, $extension;
+
     protected function configure()
     {
         $this
@@ -27,42 +29,49 @@ class BuildCommand extends Command
     {
         $source = $input->getArgument('source');
         $destination = $input->getArgument('destination');
-        $destination = $input->getArgument('extension');
+        $this->extension = $input->getArgument('extension');
         if(empty($source)) { 
             $source = 'schema';
         }
         if(empty($destination)) { 
-            $destination = 'compiled';
+            $this->destination = 'compiled';
         }
         if(empty($extension)) { 
-            $extension = 'pgql';
+            $this->extension = 'pgql';
         }
         if(!file_exists($source)) {            
             $output->writeln(sprintf('<error>The schema directory "%s" does not exist or is inaccessible.</error>', $source));
             exit(1);
         }
-        mkdir($destination);
+        @mkdir($destination);
         if(!file_exists($destination)) {            
             $output->writeln(sprintf('<error>The compilation directory "%s" is inaccessible.</error>', $destination));
             exit(1);
         }
 
+        
+        $this->compiler = new \Pho\Compiler\Compiler();
+        $this->processDir($source);
+        
+        $this->compiler->save($destination);
+        $output->writeln(sprintf('<info>Project successfully built at: %s</info>', $destination));
+        exit(0);
+
+    }
+
+    protected function processDir(string $source): void 
+    {
         $dir = scandir($source);
-        $compiler = new \Pho\Compiler\Compiler();
         foreach($dir as $file) {
-            if(substr($file, -1 * (strlen(".".$extension))) == ".".$extension) {
-                $compiler->compile($source."/".$file)->save(
-                    $destination."/".str_replace(".".$extension, "", $file)
-                );
+            if($file[0]==".") { // includes hidden, . and ..
+                continue;
+            }
+            elseif(is_dir($source.DIRECTORY_SEPARATOR.$file)) {
+                $this->processDir($source.DIRECTORY_SEPARATOR.$file);
+            }
+            elseif(substr($file, -1 * (strlen(".".$this->extension))) == ".".$this->extension) {
+                $this->compiler->compile($source.DIRECTORY_SEPARATOR.$file);
             }
         }
-
-        try {
-            \Pho\Compiler\Inspector::assertParity($destination);
-        }
-        catch(\Pho\Compiler\Exceptions\ImpairedStackException $e) {
-
-        }
-
     }
 }
