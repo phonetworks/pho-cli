@@ -85,17 +85,21 @@ eos
             exec("cp -pR ".escapeshellarg($skeleton.DIRECTORY_SEPARATOR)."* ".escapeshellarg($dir.DIRECTORY_SEPARATOR.".compiled"));
         }
 
+        $pointer = "<comment>Your project can be found at ".$dir;
         switch($skeleton_use) {
             case 0:
                 $output->writeln("<info>Project initialized with basic settings.</info>");
+                $output->writeln($pointer);
                 $output->writeln("<comment>Include (or examine) play.php to get started quickly.</comment>");
                 break;
             case 1:
                 $output->writeln(sprintf("<info>Project initialized with the %s skeleton.</info>", $skeleton));
+                $output->writeln($pointer);
                 $output->writeln("<comment>Include (or examine) play.php to get started quickly.</comment>");
                 break;
             case 2:
                 $output->writeln("<info>Project initialized with your compiled pgql files.</info>");
+                $output->writeln($pointer);
                 $output->writeln("<comment>Dismiss play.php and customize play-custom.php in accordance to your settings.</comment>");
                 break;
         }
