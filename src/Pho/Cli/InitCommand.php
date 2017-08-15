@@ -10,6 +10,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\StreamOutput;
+
+use Composer\Console\Application as ComposerApp;
+use Composer\Command\CreateProjectCommand;
+
 class InitCommand extends Command
 {
 
@@ -33,25 +40,25 @@ class InitCommand extends Command
         }
         mkdir($dir);
         $skeleton = $input->getArgument("skeleton");
-        
+        /*
         $process = new Process(
             //sprintf('cd %s && echo "'.addslashes('{"minimum-stability":"dev"}').'" > composer.json && '.dirname(__FILE__).'/../../../vendor/bin/composer require phonetworks/pho-kernel', $dir)
-            sprintf('cp -pR '.dirname(__FILE__).'/../../../vendor/phonetworks/pho-kernel/* %s && cd %s && '.$composer.' install', $dir, $dir)
+            //sprintf('cp -pR '.dirname(__FILE__).'/../../../vendor/phonetworks/pho-kernel/* %s && cd %s && '.$composer.' install', $dir, $dir)
+            sprintf('')
         );
-        
-        //$process->run();
-        //if (!$process->isSuccessful()) throw new ProcessFailedException($process);
-        //echo $process->getOutput();
-        
-        $process->start();
+        */
+        $input = new ArrayInput(array(
+            'command' => 'create-project',
+            '--stability' => 'dev',
+            'package' => 'phonetworks/pho-kernel',
+            'directory' => $dir
+             ));
 
-        foreach ($process as $type => $data) {
-            if ($process::OUT === $type) {
-                $output->write($data);
-            } else { // $process::ERR === $type
-                $output->write($data);
-            }
-        }
+        //Create the application and run it with the commands
+        $composer = new ComposerApp();
+        $composer->setAutoExit(false); 
+        $composer->run($input);
+        
 
         file_put_contents($dir.DIRECTORY_SEPARATOR.".env", 
 <<<eos
@@ -68,15 +75,10 @@ eos
             chdir($dir);
             unlink($dir.DIRECTORY_SEPARATOR."composer.json");
             copy($dir.DIRECTORY_SEPARATOR."presets".DIRECTORY_SEPARATOR.$skeleton, $dir.DIRECTORY_SEPARATOR."composer.json");
-            $process = new Process($composer.' update');
-            $process->start();
-            foreach ($process as $type => $data) {
-                if ($process::OUT === $type) {
-                    $output->write($data);
-                } else { // $process::ERR === $type
-                    $output->write($data);
-                }
-            }
+            $input = new ArrayInput(array(
+            'command' => 'update'
+             ));
+            $composer->run($input);
         }
         elseif(is_dir($skeleton)) {
             $skeleton_use = 2;
