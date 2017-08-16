@@ -9,6 +9,6 @@ sudo apt-get install -y curl php7.1 php7.1-fpm php7.1-cli php7.1-common php7.1-m
 sudo dpkg -i /opt/pho-cli/bin/ubuntu-16.04/libgraphqlparser_0.6.0-0ubuntu1_amd64.deb
 sudo dpkg -i /opt/pho-cli/bin/ubuntu-16.04/php-graphql_0.6.0-0ubuntu1_amd64.deb
 cd ~
-curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+sudo curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
 cd /opt/pho-cli
 composer install
