@@ -4,7 +4,7 @@ A command line interface for the Pho stack. Allows you build graphql files, init
 
 ## Getting Started
 
-The recommended way to install pho-lib-graph is [through composer](https://getcomposer.org/).
+The recommended way to install pho-cli is [through composer](https://getcomposer.org/).
 
 ```bash
 git clone https://github.com/phonetworks/pho-cli/
