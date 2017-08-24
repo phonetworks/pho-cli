@@ -7,6 +7,8 @@
         "php": ">=5.5",
 	    "composer/composer": "^1.4",
         "phonetworks/pho-compiler": "dev-master",
+        "phonetworks/pho-kernel": "dev-master",
+        "phonetworks/pho-server-rest": "dev-master",
         "webmozart/assert": "^1.2"
     },
     "require-dev": {
