@@ -12,9 +12,9 @@
 class ServeTest extends TestCase
 {
 
-    public function testEntityGetAttributes()
+    public function testServeAttributes()
     {
-       $output = $this->runCommand('serve');
-       $this->assertSame('foo', $output);
+       $output = $this->runCommand('help serve');
+       $this->assertContains('--kernel', $output);
     }
 }

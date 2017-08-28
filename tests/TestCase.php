@@ -49,7 +49,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
           } while ($etat['running']==FALSE || $time > time());
 
           proc_close($stream);
-          $output = file_get_contents('test/output.txt').file_get_contents('test/error-output.txt');
+          $output = file_get_contents('tests/logs/output.txt').file_get_contents('tests/logs/error-output.txt');
 
           return $output;
         }
