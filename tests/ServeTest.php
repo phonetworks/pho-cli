@@ -11,11 +11,10 @@
 
 class ServeTest extends TestCase
 {
+
     public function testEntityGetAttributes()
     {
-       $this->accertSame('foo', '$output');
-        return 1;
        $output = $this->runCommand('serve');
-       $this->accertSame('foo', $output);
+       $this->assertSame('foo', $output);
     }
 }
