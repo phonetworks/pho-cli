@@ -10,4 +10,5 @@ $application = new Application('Pho', '0.1-dev');
 $application->add(new Cli\BuildCommand());
 $application->add(new Cli\UpdateCommand());
 $application->add(new Cli\InitCommand());
+$application->add(new Cli\ServeCommand());
 $application->run();

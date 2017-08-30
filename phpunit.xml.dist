@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<phpunit bootstrap="vendor/autoload.php"
+<phpunit bootstrap="tests/autoload.php"
          colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
@@ -10,18 +10,15 @@
   <php>
     <env name="PHP_BIN" value="/usr/bin/env php" />
   </php>
-
     <testsuites>
         <testsuite name="Pho CLI Test Suite">
-            <directory>./test/TestCmd.php</directory>
+            <directory>./tests/</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist>
             <directory>./src/</directory>
-            <directory>./bin/</directory>
-            <directory>./test/</directory>
         </whitelist>
     </filter>
 
