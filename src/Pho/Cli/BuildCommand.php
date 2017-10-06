@@ -59,10 +59,16 @@ class BuildCommand extends Command
         }
 
         
+        if(!\class_exists(\Pho\Compiler\Compiler::class)) {
+            $output->writeln(sprintf('<info>No local compiler found. Will use remote servers to compile</info>', $destination));
+            // upload source to remote servers
+            // compile there and bring it back here.
+        }
+
         $this->compiler = new \Pho\Compiler\Compiler();
         $this->processDir($source);
-        
         $this->compiler->save($destination);
+
         $output->writeln(sprintf('<info>Project successfully built at: %s</info>', $destination));
         exit(0);
 
