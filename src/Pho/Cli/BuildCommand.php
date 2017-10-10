@@ -78,7 +78,8 @@ class BuildCommand extends Command
             
             curl_close ($ch);
             file_put_contents($zipfile, $response);
-
+            var_dump($response);
+            exit;
             $zip = new \ZipArchive();
             if ($zip->open($zipfile) === true) {
 
