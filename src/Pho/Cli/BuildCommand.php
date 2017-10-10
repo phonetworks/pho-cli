@@ -75,11 +75,14 @@ class BuildCommand extends Command
             curl_setopt($ch, CURLOPT_POSTFIELDS, ['file' => $curl_zip, 'extension' => $this->extension]);
             
             $response = curl_exec ($ch);
-            
+            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close ($ch);
+            if ($httpcode !== 200){
+                $output->writeln(sprintf('<error>Error from server: "%s"</error>', $response));
+                exit(0);
+            }
             file_put_contents($zipfile, $response);
-            var_dump($response);
-            exit;
+            
             $zip = new \ZipArchive();
             if ($zip->open($zipfile) === true) {
 
