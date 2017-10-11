@@ -24,7 +24,7 @@ class BuildCommand extends Command
 {
 
     protected $compiler, $extension;
-    private $remote_host = 'http://192.168.1.88';
+    private $remote_host = 'http://83.149.67.212';
 
     protected function configure()
     {
@@ -61,7 +61,7 @@ class BuildCommand extends Command
         }
         
         if(true || !\class_exists(\Pho\Compiler\Compiler::class)) {
-            $output->writeln(sprintf('<info>Tru use remote compiler %s</info>', $destination));
+            $output->writeln(sprintf('<info>No local compiled found. Using remote compiler.</info>'));
 
             $zipfile = $this->createZip($source, $destination);
             $curl_zip = curl_file_create($zipfile, 'application/zip', basename($zipfile));
