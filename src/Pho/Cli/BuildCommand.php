@@ -24,7 +24,7 @@ class BuildCommand extends Command
 {
 
     protected $compiler, $extension;
-    private $remote_host = 'http://83.149.67.212';
+    private $remote_host = 'http://83.149.67.212/pho-site-compiler/index.php';
 
     protected function configure()
     {
