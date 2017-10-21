@@ -24,7 +24,8 @@ class BuildCommand extends Command
 {
 
     protected $compiler, $extension;
-    private $remote_host = 'http://83.149.67.212/pho-site-compiler/index.php';
+    private $remote_api_url = 'https://phonetworks.com/api/compile.php';
+    private $remote_download_url = 'http://phonetworks.com/api/';
 
     protected function configure()
     {
@@ -60,7 +61,7 @@ class BuildCommand extends Command
             exit(1);
         }
         
-        if(true || !\class_exists(\Pho\Compiler\Compiler::class)) {
+        if(!\class_exists(\Pho\Compiler\Compiler::class)) {
             $output->writeln(sprintf('<info>No local compiled found. Using remote compiler.</info>'));
 
             $zipfile = $this->createZip($source, $destination);
@@ -68,7 +69,7 @@ class BuildCommand extends Command
             $headers = ['Accept: application/zip, application/json',
                         'Host: pho-cli'];
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $this->remote_host);
+            curl_setopt($ch, CURLOPT_URL, $this->remote_api_url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
             curl_setopt($ch, CURLOPT_POST,1);
@@ -81,7 +82,9 @@ class BuildCommand extends Command
                 $output->writeln(sprintf('<error>Error from server: "%s"</error>', $response));
                 exit(0);
             }
-            file_put_contents($zipfile, $response);
+            $response = json_decode($response, true);
+            $download_url = $this->remote_api_url.$response["location"];
+            file_put_contents($zipfile, fopen($download_url, 'r'));
             
             $zip = new \ZipArchive();
             if ($zip->open($zipfile) === true) {
