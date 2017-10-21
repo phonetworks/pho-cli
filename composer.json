@@ -6,7 +6,6 @@
         "padraic/phar-updater": "*",
         "php": ">=5.5",
 	    "composer/composer": "^1.4",
-        "phonetworks/pho-compiler": "dev-master",
         "phonetworks/pho-server-rest": "dev-master",
         "webmozart/assert": "^1.2"
     },
@@ -14,6 +13,9 @@
         "phpunit/phpunit": "~4.8",
         "squizlabs/php_codesniffer": "3.*",
         "psy/psysh": "*"
+    },
+    "suggest": {
+        "phonetworks/pho-compiler": "allows building PGQL files locally"
     },
     "autoload": {
 	     "psr-4": {
