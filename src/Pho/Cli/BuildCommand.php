@@ -83,7 +83,7 @@ class BuildCommand extends Command
                 exit(0);
             }
             $response = json_decode($response, true);
-            $download_url = $this->remote_api_url.$response["location"];
+            $download_url = $this->remote_download_url.$response["location"];
             file_put_contents($zipfile, fopen($download_url, 'r'));
             
             $zip = new \ZipArchive();
