@@ -35,7 +35,7 @@ class InitCommand extends Command
             ->setName('init')
             ->setDescription('Initializes a new project')
             ->addArgument('destination', InputArgument::REQUIRED, 'The directory where the application will be hosted.')
-            ->addArgument('skeleton', InputArgument::OPTIONAL, 'The template to copy. Either one of the presets (Basic[default], Twitter, Twitter-simple, Facebook) or a directory with your **compiled** pgql files.');
+            ->addArgument('skeleton', InputArgument::OPTIONAL, 'The template to copy. Either one of the presets (Basic[default], Twitter, Twitter-simple, Facebook, Web) or a directory with your **compiled** pgql files.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -79,7 +79,7 @@ eos
 );
 
         $skeleton_use = 0; // no use, 1: template, 2: compiled
-        if(in_array($skeleton, ["twitter-simple", "twitter-full", "facebook", "basic"])) {
+        if(in_array($skeleton, ["twitter-simple", "twitter-full", "facebook", "basic", "web"])) {
             $skeleton_use = 1;
             chdir($dir);
             unlink($dir.DIRECTORY_SEPARATOR."composer.json");
