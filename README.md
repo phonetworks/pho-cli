@@ -22,7 +22,7 @@ Initializes a new project. This is used when you'd like to install a new kernel 
   
 **serve**
 Runs a HTTP server based on Pho Graph. This may be used once you've initialized a kernel.
-> Usage: ```bin/pho.php serve [<kernel>] where kernel points to the directory where the kernel resides.
+> Usage: ```bin/pho.php serve [<kernel>]``` where kernel points to the directory where the kernel resides.
 
 Run ```bin/pho.php help``` at any time for more information.
 
