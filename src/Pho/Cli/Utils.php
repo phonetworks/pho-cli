@@ -63,7 +63,7 @@ class Utils
     {
         $handle = opendir($dir);
         while (false !== ($entry = readdir($handle))) {
-          if ($entry != "." && $entry != "..") {
+          if ($entry != "." && $entry != ".." && $entry != "README.md") {
             return false;
           }
         }
