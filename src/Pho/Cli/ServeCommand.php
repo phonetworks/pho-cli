@@ -29,14 +29,18 @@ class ServeCommand extends Command
     {
         $this
             ->setName('serve')
-            ->setDescription('Run server based on pho Graph ')
-            ->addArgument('kernel', 'k', InputOption::VALUE_OPTIONAL, 'Kernel path');
+            ->setDescription('Run RESTful HTTP server based on given Pho kernel')
+            ->addArgument('kernel', InputOption::VALUE_REQUIRED, 'Kernel path');
 
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $kernel_path = $input->getOption('kernel');
+        $kernel_path = $input->getArgument('kernel');
+
+        if(is_array($kernel_path)) {
+            $kernel_path = $kernel_path[0];
+        }
 
         if (empty($kernel_path) || !is_dir($kernel_path)) {
             var_dump($kernel_path);
@@ -48,11 +52,18 @@ class ServeCommand extends Command
         include_once rtrim($kernel_path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
         if (!class_exists('\\Pho\\Kernel\\Kernel')) {
-            throw new \InvalidArgumentException('Kernel class not founded in current path:' . $kernel_path);
+            throw new \InvalidArgumentException('Kernel class cannot be found in current path:' . $kernel_path);
+            return;
+        }
+
+        $kernel_file = rtrim($kernel_path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . "kernel.php";
+
+        if(!file_exists($kernel_file)) {
+            throw new \InvalidArgumentException('Kernel file cannot be found in current path:' . $kernel_file);
             return;
         }
         
-        include(rtrim($kernel_path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . "kernel.php");
+        include($kernel_file);
 
         $this->server = new \Pho\Server\Rest\Daemon($kernel);
         //eval(\Psy\sh());

@@ -40,7 +40,7 @@ class InitCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $composer = "php " . dirname(__FILE__).'/../../../bin/composer.phar ';
+        //$composer_cmd =  __DIR__ .'/../../../vendor/bin/composer ';
 
         $dir = $input->getArgument('destination');
         if(file_exists($dir)) {
@@ -56,11 +56,14 @@ class InitCommand extends Command
             sprintf('')
         );
         */
+
+        
         $input = new ArrayInput(array(
             'command' => 'create-project',
-            '--stability' => 'dev',
+            // '--stability' => 'dev',
             'package' => 'phonetworks/pho-kernel',
-            'directory' => $dir
+            'directory' => $dir,
+            'version' => '^2.0'
              ));
 
         //Create the application and run it with the commands
@@ -68,15 +71,14 @@ class InitCommand extends Command
         $composer->setAutoExit(false); 
         $composer->run($input);
         
-
-        file_put_contents($dir.DIRECTORY_SEPARATOR.".env", 
-<<<eos
-DATABASE_TYPE="redis"
-DATABASE_URI"="redis://127.0.0.1:6379"
-STORAGE_TYPE="filesystem"
-STORAGE_URI="filesystem:// /tmp/pho"   
-eos
-);
+        //exec($composer_cmd . "create-project --stability=dev phonetworks/pho-kernel ".escapeshellarg($dir)." '^2.0'");
+        
+        if(file_exists(__DIR__.'/../../../.env')) {
+            file_put_contents(
+                $dir.DIRECTORY_SEPARATOR.".env", 
+                file_get_contents(__DIR__.'/../../../.env')
+            );
+        }
 
         $skeleton_use = 0; // no use, 1: template, 2: compiled
         if(in_array($skeleton, ["twitter-simple", "twitter-full", "facebook", "basic", "web"])) {
@@ -84,37 +86,56 @@ eos
             chdir($dir);
             unlink($dir.DIRECTORY_SEPARATOR."composer.json");
             copy($dir.DIRECTORY_SEPARATOR."presets".DIRECTORY_SEPARATOR.$skeleton, $dir.DIRECTORY_SEPARATOR."composer.json");
+            //exec("cd ".escapeshellarg($dir)." && " . $composer_cmd . "create-project --stability=dev phonetworks/pho-kernel ".escapeshellarg($dir)." '^2.0'");
+            
             $input = new ArrayInput(array(
             'command' => 'update'
              ));
             $composer->run($input);
+            //*/
         }
         elseif(is_dir($skeleton)) {
             $skeleton_use = 2;
             chdir($dir);
             mkdir(".compiled");
-            exec("cp -pR ".escapeshellarg($skeleton.DIRECTORY_SEPARATOR)."* ".escapeshellarg($dir.DIRECTORY_SEPARATOR.".compiled"));
+            Utils::rcopy($skeleton, $dir.DIRECTORY_SEPARATOR.".compiled");
+            // exec("cp -pR ".escapeshellarg($skeleton.DIRECTORY_SEPARATOR)."* ".escapeshellarg($dir.DIRECTORY_SEPARATOR.".compiled"));
         }
+
+        /*
+        $composer = new ComposerApp();
+        $composer->setAutoExit(false);
+        */
+        chdir(__DIR__ . "/../../..");
+        $input = new ArrayInput(array(
+            'command' => 'install',
+        ));
+        $composer->run($input);
+
+//        `$composer_cmd install`;
+        
 
         $pointer = "<comment>Your project can be found at ".$dir;
         switch($skeleton_use) {
             case 0:
                 $output->writeln("<info>Project initialized with basic settings.</info>");
                 $output->writeln($pointer);
-                $output->writeln("<comment>Include (or examine) play.php to get started quickly.</comment>");
+                $output->writeln("<comment>Include (or examine) kernel.php to get started quickly.</comment>");
                 break;
             case 1:
                 $output->writeln(sprintf("<info>Project initialized with the %s skeleton.</info>", $skeleton));
                 $output->writeln($pointer);
-                $output->writeln("<comment>Include (or examine) play.php to get started quickly.</comment>");
+                $output->writeln("<comment>Include (or examine) kernel.php to get started quickly.</comment>");
                 break;
             case 2:
                 $output->writeln("<info>Project initialized with your compiled pgql files.</info>");
                 $output->writeln($pointer);
-                $output->writeln("<comment>Dismiss play.php and customize play-custom.php in accordance to your settings.</comment>");
+                $output->writeln("<comment>Customize kernel.php in accordance to your settings.</comment>");
                 break;
         }
 
+        
+        
         exit(0);
 
     }

@@ -11,4 +11,5 @@ $application->add(new Cli\BuildCommand());
 $application->add(new Cli\UpdateCommand());
 $application->add(new Cli\InitCommand());
 $application->add(new Cli\ServeCommand());
+$application->add(new Cli\TestCommand());
 $application->run();
