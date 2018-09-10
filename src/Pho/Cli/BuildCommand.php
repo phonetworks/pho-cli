@@ -24,8 +24,8 @@ class BuildCommand extends Command
 {
 
     protected $compiler, $extension;
-    private $remote_api_url = 'https://phonetworks.com/api/compile.php';
-    private $remote_download_url = 'http://phonetworks.com/api/';
+    private $remote_api_url = 'https://build.phonetworks.com/api/compile.php';
+    private $remote_download_url = 'https://build.phonetworks.com/api/';
 
     protected function configure()
     {
