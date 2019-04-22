@@ -1,6 +1,6 @@
 # Pho-CLI [![Build Status](https://travis-ci.org/phonetworks/pho-cli.svg?branch=master)](https://travis-ci.org/phonetworks/pho-cli)
 
-A command line interface for the Pho stack. Allows you build graphql files, initialize new projects, and expose a non-blocking event-driven RESTful API via HTTP or HTTPS.
+A command line interface for the Phở stack. Allows you build graphql files, initialize new projects, and expose a non-blocking event-driven RESTful API via HTTP or HTTPS.
 
 ## Getting Started
 
@@ -21,7 +21,7 @@ Initializes a new project. This is used when you'd like to install a new kernel 
 > Usage: ```bin/pho.php init <destination> [<skeleton>]``` where destination is the folder where you'd like the kernel to reside, and skeleton is the name of the template to use or a directory where your compiled pgql files reside.
   
 **serve**
-Runs a HTTP server based on Pho Graph. This may be used once you've initialized a kernel.
+Runs a HTTP server based on Phở Graph. This may be used once you've initialized a kernel.
 > Usage: ```bin/pho.php serve [<kernel>]``` where kernel points to the directory where the kernel resides.
   
 **test**
