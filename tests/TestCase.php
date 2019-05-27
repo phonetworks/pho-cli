@@ -23,7 +23,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
         unset($this->php);
     }
 
-    protected function runCommand($cmd = 'help', $max_seconds = 20)
+    protected function runCommand($cmd = 'help', $max_seconds = 10)
     {
         $string = sprintf("%s %s",
                 escapeshellcmd('php'), //$this->php
@@ -41,10 +41,11 @@ class TestCase extends \PHPUnit\Framework\TestCase
         $stream = proc_open($string.' '.escapeshellcmd($cmd), $descriptorspec, $pipes);
         if (is_resource($stream)) {
           
-          $time = time() + $max_microseconds;
+          $time = time() + $max_seconds;
           
           do {
             $etat=proc_get_status($stream);
+            print_r($etat);
             sleep(1);
           } while ($etat['running']==FALSE || $time > time());
 
