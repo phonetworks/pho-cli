@@ -13,7 +13,7 @@ cd pho-cli && composer install
 ## Available Commands
 
 **build**
-Builds graphql schema into executable Pho. This may be used if you have cloned a recipe, modified and need to compile it.
+Builds graphql schema into executable Phở. This may be used if you have cloned a recipe, modified and need to compile it.
 > Usage: ```bin/pho.php build [<source>] [<destination>] [<extension>]``` where extension is the file extension (.pgql by default)
   
 **init**
