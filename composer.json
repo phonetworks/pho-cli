@@ -5,7 +5,7 @@
         "symfony/console": "^3.2",
         "padraic/phar-updater": "*",
         "php": ">=7.2",
-        "phonetworks/pho-compiler": ">=3.0",
+        "phonetworks/pho-compiler": "dev-master",
 	    "composer/composer": "^1.4",
         "phonetworks/pho-server-rest": "dev-master",
         "webmozart/assert": "^1.2"
