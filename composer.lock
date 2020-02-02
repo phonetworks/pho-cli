@@ -727,19 +727,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phonetworks/pho-compiler.git",
-                "reference": "934e9e318ce6b1eef427f7adee2877e4720c1241"
+                "reference": "c56328d4a6b224e046038a34f0ae268bc9ab79b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phonetworks/pho-compiler/zipball/934e9e318ce6b1eef427f7adee2877e4720c1241",
-                "reference": "934e9e318ce6b1eef427f7adee2877e4720c1241",
+                "url": "https://api.github.com/repos/phonetworks/pho-compiler/zipball/c56328d4a6b224e046038a34f0ae268bc9ab79b8",
+                "reference": "c56328d4a6b224e046038a34f0ae268bc9ab79b8",
                 "shasum": ""
             },
             "require": {
                 "danielstjules/stringy": "^3.0",
                 "ext-curl": "*",
                 "ext-dom": "*",
-                "ext-zip": "*",
                 "kyeates/psr-loggers": "^1.0",
                 "mustache/mustache": "^2.11",
                 "phonetworks/pho-lib-graphql-parser": "^3.0",
@@ -784,7 +783,7 @@
                 "social",
                 "sql"
             ],
-            "time": "2019-05-27T02:04:45+00:00"
+            "time": "2020-02-02T04:09:54+00:00"
         },
         {
             "name": "phonetworks/pho-lib-graphql-parser",
