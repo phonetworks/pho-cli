@@ -69,7 +69,7 @@ class ServeCommand extends Command
         //eval(\Psy\sh());
         $port = (!empty(getenv('SERVER_PORT'))) ? getenv('SERVER_PORT') : 1337;
         $host = (!empty(getenv('SERVER_HOST'))) ? getenv('SERVER_HOST') : '0.0.0.0';
-        $this->server->setPort($port);
+        $this->server->bootstrap()->setPort($port);
         $this->server->serve($port, $host);
         
     }
