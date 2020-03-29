@@ -65,12 +65,11 @@ class ServeCommand extends Command
         
         include($kernel_file);
 
-        $this->server = new \Pho\Server\Rest\Daemon($kernel);
+        $this->server = new \Pho\Server\Rest\Server($kernel);
         //eval(\Psy\sh());
         $port = (!empty(getenv('SERVER_PORT'))) ? getenv('SERVER_PORT') : 1337;
         $host = (!empty(getenv('SERVER_HOST'))) ? getenv('SERVER_HOST') : '0.0.0.0';
-        $this->server->setPort($port);
-        $this->server->serve($port, $host);
-        
+        $this->server->port($port);
+        $this->server->serve();
     }
 }

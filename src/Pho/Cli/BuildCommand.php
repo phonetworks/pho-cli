@@ -32,9 +32,8 @@ class BuildCommand extends Command
         $this
             ->setName('build')
             ->setDescription('Builds graphql schema into executable Pho')
-            ->addArgument('source', InputArgument::OPTIONAL, 'The directory where the graphql schema resides.')
-            ->addArgument('destination', InputArgument::OPTIONAL, 'The directory where the compiled Pho files will go.')
-            ->addArgument('extension', InputArgument::OPTIONAL, 'The extension to scan for graphql schema files.');
+            ->addArgument('source', InputArgument::VALUE_REQUIRED, 'The directory where the graphql schema resides.')
+            ->addArgument('destination', InputArgument::VALUE_REQUIRED, 'The directory where the compiled Pho files will go.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
