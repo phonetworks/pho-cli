@@ -13,6 +13,7 @@ namespace Pho\Cli;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -23,6 +24,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 class BuildCommand extends Command
 {
 
+    const PHOFILE = ".phonetworks";
     protected $compiler, $extension;
     private $remote_api_url = 'https://build.phonetworks.com/api/compile.php';
     private $remote_download_url = 'https://build.phonetworks.com/api/';
@@ -31,12 +33,20 @@ class BuildCommand extends Command
     {
         $this
             ->setName('build')
-            ->setDescription('Builds graphql schema into executable Pho')
-            ->addArgument('source', InputArgument::VALUE_REQUIRED, 'The directory where the graphql schema resides.')
-            ->addArgument('destination', InputArgument::VALUE_REQUIRED, 'The directory where the compiled Pho files will go.');
+            ->setDescription('Builds graphql schema into executable Pho');
+            //->addArgument('source', InputOption::VALUE_REQUIRED, 'The directory where the graphql schema resides.')
+            //->addArgument('destination', InputOption::VALUE_REQUIRED, 'The directory where the compiled Pho files will go.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $file = getcwd() . DIRECTORY_SEPARATOR . static::PHOFILE;
+        if(!\file_exists($file)) {
+            
+        }
+        exit(0);
+    }
+    protected function execute2(InputInterface $input, OutputInterface $output)
     {
         $source = $input->getArgument('source');
         $destination = $input->getArgument('destination');

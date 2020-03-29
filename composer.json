@@ -2,7 +2,7 @@
     "minimum-stability" : "dev",
     "prefer-stable": true,
     "require": {
-        "symfony/console": "^3.2",
+        "symfony/console": "^5.0",
         "padraic/phar-updater": "*",
         "php": ">=7.2",
         "phonetworks/pho-compiler": "dev-master",

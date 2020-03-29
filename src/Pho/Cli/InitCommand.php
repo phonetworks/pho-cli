@@ -26,6 +26,8 @@ use Symfony\Component\Console\Output\StreamOutput;
 use Composer\Console\Application as ComposerApp;
 use Composer\Command\CreateProjectCommand;
 
+use Symfony\Component\Console\Style\SymfonyStyle;
+
 class InitCommand extends Command
 {
 
@@ -33,12 +35,21 @@ class InitCommand extends Command
     {
         $this
             ->setName('init')
-            ->setDescription('Initializes a new project')
-            ->addArgument('destination', InputArgument::REQUIRED, 'The directory where the application will be hosted.')
-            ->addArgument('skeleton', InputArgument::OPTIONAL, 'The template to copy. Either one of the presets (Basic[default], Twitter, Twitter-simple, Facebook, Web) or a directory with your **compiled** pgql files.');
+            ->setDescription('Initializes a new app');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $io = new SymfonyStyle($input, $output);
+        $app_name = $io->ask('App Name (no dashes or spaces)');
+        //error_log($app_name);
+        $desc = $io->ask('Describe the app in a short sentence');
+        $type = $io->choice('App Template', ['blank', 'basic', 'graphjs', 'twitter-simple', 'twitter-full', 'facebook']);
+        $io->success('Lorem ipsum dolor sit amet'); // warning, error
+
+    }
+
+    protected function execute2(InputInterface $input, OutputInterface $output)
     {
         //$composer_cmd =  __DIR__ .'/../../../vendor/bin/composer ';
 
