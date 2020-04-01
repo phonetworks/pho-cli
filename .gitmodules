@@ -1,0 +1,3 @@
+[submodule "data/skeleton"]
+	path = data/skeleton
+	url = https://github.com/phonetworks/skeleton

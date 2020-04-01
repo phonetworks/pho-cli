@@ -28,6 +28,10 @@ use Composer\Command\CreateProjectCommand;
 
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+use Pho\Cli\Utils;
+
+use VIPSoft\Unzip\Unzip;
+
 class InitCommand extends Command
 {
 
@@ -45,109 +49,44 @@ class InitCommand extends Command
         //error_log($app_name);
         $desc = $io->ask('Describe the app in a short sentence');
         $type = $io->choice('App Template', ['blank', 'basic', 'graphjs', 'twitter-simple', 'twitter-full', 'facebook']);
-        $io->success('Lorem ipsum dolor sit amet'); // warning, error
-
-    }
-
-    protected function execute2(InputInterface $input, OutputInterface $output)
-    {
-        //$composer_cmd =  __DIR__ .'/../../../vendor/bin/composer ';
-
-        $dir = $input->getArgument('destination');
-        if(file_exists($dir)) {
-            $output->writeln(sprintf('<error>The directory "%s" already exists.</error>', $dir));
-            exit(1);
-        }
-        mkdir($dir);
-        $skeleton = $input->getArgument("skeleton");
-        /*
-        $process = new Process(
-            //sprintf('cd %s && echo "'.addslashes('{"minimum-stability":"dev"}').'" > composer.json && '.dirname(__FILE__).'/../../../vendor/bin/composer require phonetworks/pho-kernel', $dir)
-            //sprintf('cp -pR '.dirname(__FILE__).'/../../../vendor/phonetworks/pho-kernel/* %s && cd %s && '.$composer.' install', $dir, $dir)
-            sprintf('')
-        );
-        */
-
         
-        $input = new ArrayInput(array(
-            'command' => 'create-project',
-            // '--stability' => 'dev',
-            'package' => 'phonetworks/pho-kernel',
-            'directory' => $dir,
-            'version' => '^2.0'
-             ));
-
-        //Create the application and run it with the commands
-        $composer = new ComposerApp();
-        $composer->setAutoExit(false); 
-        $composer->run($input);
-        
-        //exec($composer_cmd . "create-project --stability=dev phonetworks/pho-kernel ".escapeshellarg($dir)." '^2.0'");
-        
-        if(file_exists(__DIR__.'/../../../.env')) {
-            file_put_contents(
-                $dir.DIRECTORY_SEPARATOR.".env", 
-                file_get_contents(__DIR__.'/../../../.env')
-            );
-        }
-
-        $skeleton_use = 0; // no use, 1: template, 2: compiled
-        if(in_array($skeleton, ["twitter-simple", "twitter-full", "facebook", "basic", "web"])) {
-            $skeleton_use = 1;
-            chdir($dir);
-            unlink($dir.DIRECTORY_SEPARATOR."composer.json");
-            copy($dir.DIRECTORY_SEPARATOR."presets".DIRECTORY_SEPARATOR.$skeleton, $dir.DIRECTORY_SEPARATOR."composer.json");
-            //exec("cd ".escapeshellarg($dir)." && " . $composer_cmd . "create-project --stability=dev phonetworks/pho-kernel ".escapeshellarg($dir)." '^2.0'");
-            
-            $input = new ArrayInput(array(
-            'command' => 'update'
-             ));
-            $composer->run($input);
-            //*/
-        }
-        elseif(is_dir($skeleton)) {
-            $skeleton_use = 2;
-            chdir($dir);
-            mkdir(".compiled");
-            Utils::rcopy($skeleton, $dir.DIRECTORY_SEPARATOR.".compiled");
-            // exec("cp -pR ".escapeshellarg($skeleton.DIRECTORY_SEPARATOR)."* ".escapeshellarg($dir.DIRECTORY_SEPARATOR.".compiled"));
-        }
-
-        /*
-        $composer = new ComposerApp();
-        $composer->setAutoExit(false);
-        */
-        chdir(__DIR__ . "/../../..");
-        $input = new ArrayInput(array(
-            'command' => 'install',
-        ));
-        $composer->run($input);
-
-//        `$composer_cmd install`;
-        
-
-        $pointer = "<comment>Your project can be found at ".$dir;
-        switch($skeleton_use) {
-            case 0:
-                $output->writeln("<info>Project initialized with basic settings.</info>");
-                $output->writeln($pointer);
-                $output->writeln("<comment>Include (or examine) kernel.php to get started quickly.</comment>");
+        $root = dirname(dirname(dirname(__DIR__)));
+        $source = $root . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "skeleton";
+        $destination = getcwd() . DIRECTORY_SEPARATOR . $app_name;
+        @mkdir($destination);
+        Utils::rcopy($source, $destination);
+        $unzipper  = new Unzip();
+        switch($type) {
+            case "blank":
+                
                 break;
-            case 1:
-                $output->writeln(sprintf("<info>Project initialized with the %s skeleton.</info>", $skeleton));
-                $output->writeln($pointer);
-                $output->writeln("<comment>Include (or examine) kernel.php to get started quickly.</comment>");
+            case "basic":
+                
                 break;
-            case 2:
-                $output->writeln("<info>Project initialized with your compiled pgql files.</info>");
-                $output->writeln($pointer);
-                $output->writeln("<comment>Customize kernel.php in accordance to your settings.</comment>");
+            case "graphjs":
+                
+                break;
+            case "twitter-simple":
+                
+                break;
+            case "twitter-full":
+                
+                break;
+            case "facebook":
+                $this->downloadAndExtract('https://github.com/pho-recipes/Facebook/archive/master.zip');
                 break;
         }
-
         
-        
+        $io->title("Project successfully built");
+        $io->text([
+            'Emre <href=https://symfony.com>Lorem</> ipsum dolor sit <options=bold,underscore>amet</>',
+            'Consectetur adipiscing elit',
+            'Aenean sit amet arcu <info>vitae</info> sem faucibus porta',
+        ]);
+        //$io->note('Xyz');
+        $io->newLine(1);
+        //$io->success('Lorem ipsum dolor sit amet'); // warning, error
         exit(0);
-
     }
+
 }

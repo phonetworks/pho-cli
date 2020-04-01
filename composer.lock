@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b365c250107ef052ecef113e4017e00a",
+    "content-hash": "647a264acdd196c141e09fd0745958e9",
     "packages": [
         {
             "name": "composer/ca-bundle",
@@ -2140,6 +2140,51 @@
                 "standards"
             ],
             "time": "2019-11-18T17:27:11+00:00"
+        },
+        {
+            "name": "vipsoft/unzip",
+            "version": "1.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vipsoft/Unzip.git",
+                "reference": "657cda91648db84b8882e6ac881e2fd439bbe82c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vipsoft/Unzip/zipball/657cda91648db84b8882e6ac881e2fd439bbe82c",
+                "reference": "657cda91648db84b8882e6ac881e2fd439bbe82c",
+                "shasum": ""
+            },
+            "require": {
+                "ext-zip": "*",
+                "php": ">=5.3.6"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "VIPSoft\\Unzip": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anthon Pang",
+                    "email": "apang@softwaredevelopment.ca",
+                    "role": "developer"
+                }
+            ],
+            "description": "Unzip library - a ZipArchive wrapper",
+            "homepage": "http://github.com/vipsoft/",
+            "keywords": [
+                "pclzip",
+                "unzip",
+                "zip",
+                "ziparchive"
+            ],
+            "time": "2016-02-16T04:29:22+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
