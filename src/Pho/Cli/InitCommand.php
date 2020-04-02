@@ -34,7 +34,8 @@ use VIPSoft\Unzip\Unzip;
 
 class InitCommand extends Command
 {
-
+    private $io;
+    private $app_name;
     protected function configure()
     {
         $this
@@ -44,15 +45,15 @@ class InitCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new SymfonyStyle($input, $output);
-        $app_name = $io->ask('App Name (no dashes or spaces)');
-        //error_log($app_name);
-        $desc = $io->ask('Describe the app in a short sentence');
-        $type = $io->choice('App Template', ['blank', 'basic', 'graphjs', 'twitter-simple', 'twitter-full', 'facebook']);
+        $this->io = new SymfonyStyle($input, $output);
+        $this->app_name = $this->io->ask('App Name (no dashes or spaces)');
+        //error_log($this->app_name);
+        $desc = $this->io->ask('Describe the app in a short sentence');
+        $type = $this->io->choice('App Template', ['blank', 'basic', 'graphjs', 'twitter-simple', 'twitter-full', 'facebook']);
         
         $root = dirname(dirname(dirname(__DIR__)));
         $source = $root . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "skeleton";
-        $destination = getcwd() . DIRECTORY_SEPARATOR . $app_name;
+        $destination = getcwd() . DIRECTORY_SEPARATOR . $this->app_name;
         @mkdir($destination);
         Utils::rcopy($source, $destination);
         $unzipper  = new Unzip();
@@ -77,16 +78,57 @@ class InitCommand extends Command
                 break;
         }
         
-        $io->title("Project successfully built");
-        $io->text([
+        $this->io->title("Project successfully built");
+        $this->io->text([
             'Emre <href=https://symfony.com>Lorem</> ipsum dolor sit <options=bold,underscore>amet</>',
             'Consectetur adipiscing elit',
             'Aenean sit amet arcu <info>vitae</info> sem faucibus porta',
         ]);
-        //$io->note('Xyz');
-        $io->newLine(1);
-        //$io->success('Lorem ipsum dolor sit amet'); // warning, error
+        //$this->io->note('Xyz');
+        $this->io->newLine(1);
+        //$this->io->success('Lorem ipsum dolor sit amet'); // warning, error
         exit(0);
     }
+    protected function recurseRmdir($dir) {
+        $files = array_diff(scandir($dir), array('.','..'));
+        foreach ($files as $file) {
+          (is_dir("$dir/$file")) ? $this->recurseRmdir("$dir/$file") : unlink("$dir/$file");
+        }
+        return rmdir($dir);
+    }
+    protected function downloadAndExtract($urlToDownload){
+        $this->io->text(['Building your Project...']);
+        $fileDestination = $this->app_name."/tmpfile.zip";
+        $fileDestinationEx = $this->app_name."/tmpfolder";
+        // Download file to our app
+        file_put_contents($fileDestination, fopen($urlToDownload, 'r'));
+        // Extract file to a temp folder
+        $unzipper  = new Unzip();
+        $filenames = $unzipper->extract($fileDestination, $fileDestinationEx);
+        
+        // then put the pgql files into schema/ folder
+        $files = glob($fileDestinationEx . '/*/*.pgql') + glob($fileDestinationEx . '/*/*/*.pgql');
+        if(!is_dir($this->app_name . '/schema/')) {
+            mkdir($this->app_name . '/schema/');
+        }
+        foreach ($files as $file) {
+            $fileNameSplit = explode("/", $file);
+            $fileName = end($fileNameSplit);
+            rename($file,   $this->app_name . '/schema/' . $fileName);
+        }
 
+        // .compiled folder into build/ folder
+        $files = glob($fileDestinationEx . '/*/.compiled');
+        if(!is_dir($this->app_name . '/build/')) {
+            mkdir($this->app_name . '/build/');
+        }
+        foreach ($files as $file) {
+            $fileNameSplit = explode("/", $file);
+            $fileName = end($fileNameSplit);
+            rename($file,   $this->app_name . '/build/' . $fileName);
+        }
+        // delete the zip and temp directory
+        unlink($fileDestination);
+        $this->recurseRmdir($fileDestinationEx);
+    }
 }
