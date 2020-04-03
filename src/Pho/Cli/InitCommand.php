@@ -65,7 +65,7 @@ class InitCommand extends Command
                 $this->downloadAndExtract('https://github.com/pho-recipes/Basic/archive/master.zip');
                 break;
             case "graphjs":
-                $this->downloadAndExtract('https://github.com/pho-recipes/Basic/archive/master.zip');
+                $this->downloadAndExtract('https://github.com/pho-recipes/Web/archive/master.zip');
                 break;
             case "twitter-simple":
                 $this->downloadAndExtract('https://github.com/pho-recipes/Twitter-simple/archive/master.zip');
@@ -92,37 +92,43 @@ class InitCommand extends Command
     protected function downloadAndExtract($urlToDownload){
         $this->io->text(['Building your Project...']);
         $fileDestination = $this->app_name."/tmpfile.zip";
-        $fileDestinationEx = $this->app_name."/tmpfolder";
-        // Download file to our app
-        file_put_contents($fileDestination, fopen($urlToDownload, 'r'));
-        // Extract file to a temp folder
-        $unzipper  = new Unzip();
-        $filenames = $unzipper->extract($fileDestination, $fileDestinationEx);
-        
-        // then put the pgql files into schema/ folder
-        $files = glob($fileDestinationEx . '/*/*.pgql') + glob($fileDestinationEx . '/*/*/*.pgql');
-        if(!is_dir($this->app_name . '/schema/')) {
-            mkdir($this->app_name . '/schema/');
+        // $fileDestinationEx = $this->app_name."/pho-project-tmpfolder";
+        $fileDestinationEx = Utils::cratetempdir();
+        if($fileDestinationEx) {
+            // Download file to our app
+            file_put_contents($fileDestination, fopen($urlToDownload, 'r'));
+            // Extract file to a temp folder
+            $unzipper  = new Unzip();
+            $filenames = $unzipper->extract($fileDestination, $fileDestinationEx);
+            
+            // then put the pgql files into schema/ folder
+            $files = glob($fileDestinationEx . '/*/*.pgql') + glob($fileDestinationEx . '/*/*/*.pgql');
+            if(!is_dir($this->app_name . '/schema/')) {
+                mkdir($this->app_name . '/schema/');
+            }
+            foreach ($files as $file) {
+                $fileNameSplit = explode("/", $file);
+                $fileName = end($fileNameSplit);
+                rename($file,   $this->app_name . '/schema/' . $fileName);
+            }
+    
+            // .compiled folder into build/ folder
+            $files = glob($fileDestinationEx . '/*/.compiled');
+            if(!is_dir($this->app_name . '/build/')) {
+                mkdir($this->app_name . '/build/');
+            }
+            $this->io->text($files);
+            foreach ($files as $file) {
+                Utils::rcopy ($file,   $this->app_name . '/build/');
+            }
+            // delete the zip and temp directory
+            unlink($fileDestination);
+            Utils::dirDel($fileDestinationEx);
         }
-        foreach ($files as $file) {
-            $fileNameSplit = explode("/", $file);
-            $fileName = end($fileNameSplit);
-            rename($file,   $this->app_name . '/schema/' . $fileName);
+        else {
+            $this->io->text(['Unable to Create Project (not able to create temp folder)']);
+            exit(0);
         }
-
-        // .compiled folder into build/ folder
-        $files = glob($fileDestinationEx . '/*/.compiled');
-        if(!is_dir($this->app_name . '/build/')) {
-            mkdir($this->app_name . '/build/');
-        }
-        foreach ($files as $file) {
-            $fileNameSplit = explode("/", $file);
-            $fileName = end($fileNameSplit);
-            rename($file,   $this->app_name . '/build/' . $fileName);
-        }
-        // delete the zip and temp directory
-        unlink($fileDestination);
-        Utils::dirDel($fileDestinationEx);
     }
     protected function createBlankProject() {
         $this->io->text(['Building your Project...']);
