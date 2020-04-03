@@ -97,6 +97,8 @@ class Utils
         foreach ( $ri as $file ) {
             $file->isDir() ?  \rmdir($file) : \unlink($file);
         }
+        // Remove main directory
+        \rmdir($dir);
     }
 
     public static function isPhoDir(): bool

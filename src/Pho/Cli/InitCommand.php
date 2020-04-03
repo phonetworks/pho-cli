@@ -59,19 +59,19 @@ class InitCommand extends Command
         $unzipper  = new Unzip();
         switch($type) {
             case "blank":
-                
+                $this->createBlankProject();
                 break;
             case "basic":
-                
+                $this->downloadAndExtract('https://github.com/pho-recipes/Basic/archive/master.zip');
                 break;
             case "graphjs":
-                
+                $this->downloadAndExtract('https://github.com/pho-recipes/Basic/archive/master.zip');
                 break;
             case "twitter-simple":
-                
+                $this->downloadAndExtract('https://github.com/pho-recipes/Twitter-simple/archive/master.zip');
                 break;
             case "twitter-full":
-                
+                $this->downloadAndExtract('https://github.com/pho-recipes/Twitter-full/archive/master.zip');
                 break;
             case "facebook":
                 $this->downloadAndExtract('https://github.com/pho-recipes/Facebook/archive/master.zip');
@@ -88,13 +88,6 @@ class InitCommand extends Command
         $this->io->newLine(1);
         //$this->io->success('Lorem ipsum dolor sit amet'); // warning, error
         exit(0);
-    }
-    protected function recurseRmdir($dir) {
-        $files = array_diff(scandir($dir), array('.','..'));
-        foreach ($files as $file) {
-          (is_dir("$dir/$file")) ? $this->recurseRmdir("$dir/$file") : unlink("$dir/$file");
-        }
-        return rmdir($dir);
     }
     protected function downloadAndExtract($urlToDownload){
         $this->io->text(['Building your Project...']);
@@ -129,6 +122,15 @@ class InitCommand extends Command
         }
         // delete the zip and temp directory
         unlink($fileDestination);
-        $this->recurseRmdir($fileDestinationEx);
+        Utils::dirDel($fileDestinationEx);
+    }
+    protected function createBlankProject() {
+        $this->io->text(['Building your Project...']);
+        if(!is_dir($this->app_name . '/schema/')) {
+            mkdir($this->app_name . '/schema/');
+        }
+        if(!is_dir($this->app_name . '/build/')) {
+            mkdir($this->app_name . '/build/');
+        }
     }
 }
