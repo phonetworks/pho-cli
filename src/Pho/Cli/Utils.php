@@ -97,6 +97,8 @@ class Utils
         foreach ( $ri as $file ) {
             $file->isDir() ?  \rmdir($file) : \unlink($file);
         }
+        // Remove main directory
+        \rmdir($dir);
     }
 
     public static function isPhoDir(): bool
@@ -113,5 +115,16 @@ class Utils
         $io = new SymfonyStyle($input, $output);
         $io->error("Can't locate Pho directory structure");
         exit(1);
+    }
+    public static function cratetempdir() {
+        $tempfile=tempnam(sys_get_temp_dir(), 'pho');
+        if (file_exists($tempfile)) {
+            unlink($tempfile);
+        }
+        mkdir($tempfile);
+        if (is_dir($tempfile)) {
+            return $tempfile;
+        }
+        return false;
     }
 }
