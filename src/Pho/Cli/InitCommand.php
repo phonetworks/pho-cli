@@ -58,7 +58,14 @@ class InitCommand extends Command
         $destination = getcwd() . DIRECTORY_SEPARATOR . $this->app_name;
         @mkdir($destination);
         Utils::rcopy($source, $destination);
-        copy($destination.DIRECTORY_SEPARATOR.".env.example", $destination.DIRECTORY_SEPARATOR.".env");
+        $this->createEnvFile($source, $destination);
+        
+        /* 
+          On Linux phar can't extract dot files.
+          That's why we "touch" suppressing any error message.
+        */
+        @touch($destination.DIRECTORY_SEPARATOR.".phonetworks"); 
+        
         $unzipper  = new Unzip();
         
         $this->downloadRecipe($type);
@@ -75,6 +82,17 @@ class InitCommand extends Command
         $this->io->newLine(1);
         //$this->io->success('Lorem ipsum dolor sit amet'); // warning, error
         exit(0);
+    }
+
+    protected function createEnvFile(string $source, string $destination): void
+    {
+        if(file_exists($destination.DIRECTORY_SEPARATOR.".env.example")) {
+            @copy($destination.DIRECTORY_SEPARATOR.".env.example", $destination.DIRECTORY_SEPARATOR.".env");
+            return;
+        }
+        // Linux:
+        @copy(dirname($source) . DIRECTORY_SEPARATOR . "env.example", $destination.DIRECTORY_SEPARATOR.".env");
+        
     }
 
     /**
