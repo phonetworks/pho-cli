@@ -110,7 +110,6 @@ class InitCommand extends Command
         $archive = new \Phar($phar);
         $tmp = Utils::createTempDir();
         $archive->extractTo($tmp);
-        $archive->decompressFiles();
         return $tmp . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "skeleton";
     }
 

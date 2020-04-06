@@ -8,6 +8,5 @@
   "git-version": "package_version",
   "main": "bin/pho.php",
   "output": "pho.phar",
-  "stub": true,
-  "compression": "GZ"
+  "stub": true
 }
