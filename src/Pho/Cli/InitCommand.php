@@ -66,9 +66,10 @@ class InitCommand extends Command
 
         $this->io->title("Project successfully built");
         $this->io->text([
-            'Emre <href=https://symfony.com>Lorem</> ipsum dolor sit <options=bold,underscore>amet</>',
-            'Consectetur adipiscing elit',
-            'Aenean sit amet arcu <info>vitae</info> sem faucibus porta',
+            'The project can be found at <options=bold,underscore>'.$destination.'</>'
+            // 'Emre <href=https://symfony.com>Lorem</> ipsum dolor sit <options=bold,underscore>amet</>',
+            // 'Consectetur adipiscing elit',
+            // 'Aenean sit amet arcu <info>vitae</info> sem faucibus porta',
         ]);
         //$this->io->note('Xyz');
         $this->io->newLine(1);
