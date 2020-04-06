@@ -118,6 +118,9 @@ class InitCommand extends Command
                 break;
         }
         
+        $founder_class = addslashes($founder_class);
+        $graph_class = addslashes($graph_class);
+        
         $contents = str_replace("GRAPH_CLASS=\"\"", sprintf("GRAPH_CLASS=\"%s\"", $graph_class), $contents);
         $contents = str_replace("FOUNDER_CLASS=\"\"", sprintf("FOUNDER_CLASS=\"%s\"", $founder_class), $contents);
         $contents = str_replace("USER_CLASS=\"\"", sprintf("USER_CLASS=\"%s\"", $founder_class), $contents);
