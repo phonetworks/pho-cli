@@ -52,7 +52,9 @@ class InitCommand extends Command
         $type = $this->io->choice('App Template', ['blank', 'basic', 'graphjs', 'twitter-simple', 'twitter-full', 'facebook']);
         
         $root = dirname(dirname(dirname(__DIR__)));
-        $source = $root . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "skeleton";
+
+        $source = $this->getSkeletonDir();
+
         $destination = getcwd() . DIRECTORY_SEPARATOR . $this->app_name;
         @mkdir($destination);
         Utils::rcopy($source, $destination);
@@ -72,6 +74,24 @@ class InitCommand extends Command
         $this->io->newLine(1);
         //$this->io->success('Lorem ipsum dolor sit amet'); // warning, error
         exit(0);
+    }
+
+    /**
+     * Helper method to fetch the skeleton directory
+     * 
+     * Works no matter if it's called from within the phar or not.
+     * 
+     * @return string The skeleton dir
+     */
+    protected function getSkeletonDir(): string
+    {
+        $phar = \Phar::running();
+        if(empty($phar))
+            return $root . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "skeleton";
+        $archive = new \Phar($phar);
+        $tmp = Utils::createTempDir();
+        $archive->extractTo($tmp);
+        return $tmp . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "skeleton";
     }
 
     /**

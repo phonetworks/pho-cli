@@ -54,6 +54,9 @@ class Utils
         $i = new \DirectoryIterator($src);
         foreach($i as $f) {
             if($f->isFile()) {
+                echo \Phar::running()."\n";
+                echo $f->getRealPath()."\n";
+                echo $f->getFilename()."\n";
                 \copy($f->getRealPath(), "$dest/" . $f->getFilename());
             } else if(!$f->isDot() && $f->isDir()) {
                 self::rcopy($f->getRealPath(), "$dest/$f");

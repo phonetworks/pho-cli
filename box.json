@@ -1,21 +1,9 @@
 {
   "chmod": "0755",
   "directories": [
-    "src"
-  ],
-  "files": [
-    "LICENSE"
-  ],
-  "finder": [
-    {
-      "name": "*.php",
-      "exclude": [
-        "tests",
-        "test",
-        "Tests"
-      ],
-      "in": "vendor"
-    }
+    "src",
+    "data",
+    "vendor"
   ],
   "git-version": "package_version",
   "main": "bin/pho.php",
