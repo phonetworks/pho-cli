@@ -1,8 +1,10 @@
 # Pho-CLI [![Build Status](https://travis-ci.org/phonetworks/pho-cli.svg?branch=master)](https://travis-ci.org/phonetworks/pho-cli)
 
-A command line interface for the Phở stack. Allows you build graphql files, initialize new projects, and expose a non-blocking event-driven RESTful API via HTTP or HTTPS.
+A command line interface for the Phở stack. Allows you to build graphql files, initialize new projects, and expose a non-blocking event-driven RESTful API via HTTP or HTTPS.
 
 ## Getting Started
+
+Phở-CLI is based on PHP 7.2+ 
 
 The preferred method of installation is to use the pho-cli [PHAR](https://github.com/phonetworks/pho-cli/releases/download/0.2/pho.phar) which can be downloaded from the most recent Github Release. This method ensures you will not have any dependency conflict issue.
 
@@ -12,6 +14,9 @@ Alternatively, you may install pho-cli [through composer](https://getcomposer.or
 git clone https://github.com/phonetworks/pho-cli/
 cd pho-cli && composer install
 ```
+
+You must have [Redis](https://redis.io/) and [Neo4J](https://neo4j.com/) installed for the projects to run on your system.
+
 ## Available Commands
   
 **init**
