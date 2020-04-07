@@ -4,7 +4,7 @@
 
 # Pho-CLI [![Build Status](https://travis-ci.org/phonetworks/pho-cli.svg?branch=master)](https://travis-ci.org/phonetworks/pho-cli)
 
-A command line interface for the Phở stack. Allows you to build graphql files, initialize new projects, and expose a non-blocking event-driven RESTful API via HTTP or HTTPS.
+A command line interface for the Phở stack. Allows you to build GraphQL files, initialize new projects, and expose a non-blocking event-driven RESTful API via HTTP or HTTPS.
 
 ## Getting Started
 
