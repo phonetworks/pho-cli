@@ -17,8 +17,11 @@ Alternatively, you may install pho-cli [through composer](https://getcomposer.or
 ```bash
 git clone https://github.com/phonetworks/pho-cli/
 cd pho-cli 
+git submodule update --init --recursive 
 composer install
 ```
+
+> Note the submodule https://github.com/phonetworks/skeleton
 
 You must have [Redis](https://redis.io/) and [Neo4J](https://neo4j.com/) installed for the projects to run on your system.
 
