@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
-class ServeCommand extends Command
+class RunCommand extends Command
 {
 
     protected $server, $kernel, $founder;
@@ -28,8 +28,8 @@ class ServeCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('serve')
-            ->setDescription('Run RESTful HTTP server based on given Pho kernel');
+            ->setName('run')
+            ->setDescription('Run the Pho kernel in the command line');
 
     }
 
@@ -43,9 +43,7 @@ class ServeCommand extends Command
         include($root . DIRECTORY_SEPARATOR . "lib" . DIRECTORY_SEPARATOR . "kernel.php");
         
         $kernel = run($root);
-        include($root . DIRECTORY_SEPARATOR . "lib" . DIRECTORY_SEPARATOR . "server.php");
-        $server = \get_server($root, $kernel);
-        $server->serve();
+        eval(\Psy\sh());
         exit(0);
     }
 }

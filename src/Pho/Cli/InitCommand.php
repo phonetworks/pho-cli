@@ -26,117 +26,250 @@ use Symfony\Component\Console\Output\StreamOutput;
 use Composer\Console\Application as ComposerApp;
 use Composer\Command\CreateProjectCommand;
 
+use Symfony\Component\Console\Style\SymfonyStyle;
+
+use Pho\Cli\Utils;
+
+use VIPSoft\Unzip\Unzip;
+
 class InitCommand extends Command
 {
-
+    private $io;
+    private $app_name;
     protected function configure()
     {
         $this
             ->setName('init')
-            ->setDescription('Initializes a new project')
-            ->addArgument('destination', InputArgument::REQUIRED, 'The directory where the application will be hosted.')
-            ->addArgument('skeleton', InputArgument::OPTIONAL, 'The template to copy. Either one of the presets (Basic[default], Twitter, Twitter-simple, Facebook, Web) or a directory with your **compiled** pgql files.');
+            ->setDescription('Initializes a new app');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        //$composer_cmd =  __DIR__ .'/../../../vendor/bin/composer ';
+        $this->io = new SymfonyStyle($input, $output);
+        $this->app_name = $this->io->ask('App Name (no dashes or spaces)');
+        //error_log($this->app_name);
+        $desc = $this->io->ask('Describe the app in a short sentence');
+        $type = $this->io->choice('App Template', ['blank', 'basic', 'graphjs', 'twitter-simple', 'twitter-full', 'facebook']);
+        
+        $root = dirname(dirname(dirname(__DIR__)));
 
-        $dir = $input->getArgument('destination');
-        if(file_exists($dir)) {
-            $output->writeln(sprintf('<error>The directory "%s" already exists.</error>', $dir));
-            exit(1);
-        }
-        mkdir($dir);
-        $skeleton = $input->getArgument("skeleton");
-        /*
-        $process = new Process(
-            //sprintf('cd %s && echo "'.addslashes('{"minimum-stability":"dev"}').'" > composer.json && '.dirname(__FILE__).'/../../../vendor/bin/composer require phonetworks/pho-kernel', $dir)
-            //sprintf('cp -pR '.dirname(__FILE__).'/../../../vendor/phonetworks/pho-kernel/* %s && cd %s && '.$composer.' install', $dir, $dir)
-            sprintf('')
-        );
+        $source = $this->getSkeletonDir();
+
+        $destination = getcwd() . DIRECTORY_SEPARATOR . $this->app_name;
+        @mkdir($destination);
+        Utils::rcopy($source, $destination);
+        $this->createEnvFile($source, $destination);
+        
+        /* 
+          On Linux phar can't extract dot files.
+          That's why we "touch" suppressing any error message.
         */
-
+        @touch($destination.DIRECTORY_SEPARATOR.".phonetworks"); 
         
-        $input = new ArrayInput(array(
-            'command' => 'create-project',
-            // '--stability' => 'dev',
-            'package' => 'phonetworks/pho-kernel',
-            'directory' => $dir,
-            'version' => '^2.0'
-             ));
-
-        //Create the application and run it with the commands
-        $composer = new ComposerApp();
-        $composer->setAutoExit(false); 
-        $composer->run($input);
+        $unzipper  = new Unzip();
         
-        //exec($composer_cmd . "create-project --stability=dev phonetworks/pho-kernel ".escapeshellarg($dir)." '^2.0'");
-        
-        if(file_exists(__DIR__.'/../../../.env')) {
-            file_put_contents(
-                $dir.DIRECTORY_SEPARATOR.".env", 
-                file_get_contents(__DIR__.'/../../../.env')
-            );
-        }
+        $this->downloadRecipe($type);
+        $this->setEnvFileParams($type, $destination);
 
-        $skeleton_use = 0; // no use, 1: template, 2: compiled
-        if(in_array($skeleton, ["twitter-simple", "twitter-full", "facebook", "basic", "web"])) {
-            $skeleton_use = 1;
-            chdir($dir);
-            unlink($dir.DIRECTORY_SEPARATOR."composer.json");
-            copy($dir.DIRECTORY_SEPARATOR."presets".DIRECTORY_SEPARATOR.$skeleton, $dir.DIRECTORY_SEPARATOR."composer.json");
-            //exec("cd ".escapeshellarg($dir)." && " . $composer_cmd . "create-project --stability=dev phonetworks/pho-kernel ".escapeshellarg($dir)." '^2.0'");
-            
-            $input = new ArrayInput(array(
-            'command' => 'update'
-             ));
-            $composer->run($input);
-            //*/
-        }
-        elseif(is_dir($skeleton)) {
-            $skeleton_use = 2;
-            chdir($dir);
-            mkdir(".compiled");
-            Utils::rcopy($skeleton, $dir.DIRECTORY_SEPARATOR.".compiled");
-            // exec("cp -pR ".escapeshellarg($skeleton.DIRECTORY_SEPARATOR)."* ".escapeshellarg($dir.DIRECTORY_SEPARATOR.".compiled"));
-        }
-
-        /*
-        $composer = new ComposerApp();
-        $composer->setAutoExit(false);
-        */
-        chdir(__DIR__ . "/../../..");
-        $input = new ArrayInput(array(
-            'command' => 'install',
-        ));
-        $composer->run($input);
-
-//        `$composer_cmd install`;
-        
-
-        $pointer = "<comment>Your project can be found at ".$dir;
-        switch($skeleton_use) {
-            case 0:
-                $output->writeln("<info>Project initialized with basic settings.</info>");
-                $output->writeln($pointer);
-                $output->writeln("<comment>Include (or examine) kernel.php to get started quickly.</comment>");
-                break;
-            case 1:
-                $output->writeln(sprintf("<info>Project initialized with the %s skeleton.</info>", $skeleton));
-                $output->writeln($pointer);
-                $output->writeln("<comment>Include (or examine) kernel.php to get started quickly.</comment>");
-                break;
-            case 2:
-                $output->writeln("<info>Project initialized with your compiled pgql files.</info>");
-                $output->writeln($pointer);
-                $output->writeln("<comment>Customize kernel.php in accordance to your settings.</comment>");
-                break;
-        }
-
-        
-        
+        $this->io->title("Project successfully built");
+        $this->io->text([
+            'The project can be found at <options=bold,underscore>'.$destination.'</>'
+            // 'Emre <href=https://symfony.com>Lorem</> ipsum dolor sit <options=bold,underscore>amet</>',
+            // 'Consectetur adipiscing elit',
+            // 'Aenean sit amet arcu <info>vitae</info> sem faucibus porta',
+        ]);
+        //$this->io->note('Xyz');
+        $this->io->newLine(1);
+        //$this->io->success('Lorem ipsum dolor sit amet'); // warning, error
         exit(0);
+    }
 
+    protected function createEnvFile(string $source, string $destination): void
+    {
+        if(file_exists($destination.DIRECTORY_SEPARATOR.".env.example")) {
+            @copy($destination.DIRECTORY_SEPARATOR.".env.example", $destination.DIRECTORY_SEPARATOR.".env");
+            return;
+        }
+        // Linux:
+        @copy(dirname($source) . DIRECTORY_SEPARATOR . "env.example", $destination.DIRECTORY_SEPARATOR.".env");
+        
+    }
+
+    /**
+     * Helper method to fetch the skeleton directory
+     * 
+     * Works no matter if it's called from within the phar or not.
+     * 
+     * @return string The skeleton dir
+     */
+    protected function getSkeletonDir(): string
+    {
+        $phar = \Phar::running();
+        if(empty($phar))
+            return $root . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "skeleton";
+        $archive = new \Phar($phar);
+        $tmp = Utils::createTempDir();
+        $archive->extractTo($tmp);
+        return $tmp . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "skeleton";
+    }
+
+    /**
+     * Sets the .env file with founder and graph classes.
+     * 
+     * The areas to change in the .env file:
+     *  GRAPH_CLASS=""
+     *  FOUNDER_CLASS=""
+     *  USER_CLASS=""
+     *  FOUNDER_PARAMS=""
+     * 
+     * @param string $type Project type (e.g. facebook, blank)
+     * @param string $destination where the .env file sits
+     * 
+     * @return void
+     */
+    protected function setEnvFileParams(string $type, string $destination): void
+    {
+        $env_file = $destination . DIRECTORY_SEPARATOR . ".env";
+        $contents = file_get_contents($env_file);
+        $username = $this->io->ask('Founder Username', "admin");
+        $password = $this->io->ask('Founder Password');
+        $email = "";
+        $params = "admin::{$password}";
+        $graph_class = "";
+        $founder_class = "\\PhoNetworksAutogenerated\\User";
+        switch($type) {
+            case "blank":
+            case "basic":
+                $graph_class = "\\PhoNetworksAutogenerated\\Graph";
+                break;
+            case "graphjs":
+                $graph_class = "\\PhoNetworksAutogenerated\\Site";
+                $email = $this->io->ask('Founder Email');
+                $params = "admin::{$email}::{$password}";
+                break;
+            case "twitter-simple":
+                $graph_class = "\\PhoNetworksAutogenerated\\Twitter";
+                break;
+            case "twitter-full":
+                $graph_class = "\\PhoNetworksAutogenerated\\Twitter";
+                break;
+            case "facebook":
+                $graph_class = "\\PhoNetworksAutogenerated\\Facebook";
+                break;
+        }
+        
+        $founder_class = addslashes($founder_class);
+        $graph_class = addslashes($graph_class);
+
+        $contents = str_replace("GRAPH_CLASS=\"\"", sprintf("GRAPH_CLASS=\"%s\"", $graph_class), $contents);
+        $contents = str_replace("FOUNDER_CLASS=\"\"", sprintf("FOUNDER_CLASS=\"%s\"", $founder_class), $contents);
+        $contents = str_replace("USER_CLASS=\"\"", sprintf("USER_CLASS=\"%s\"", $founder_class), $contents);
+        $contents = str_replace("FOUNDER_PARAMS=\"\"", sprintf("FOUNDER_PARAMS=\"%s\"", $params), $contents);
+        
+        file_put_contents($env_file, $contents, LOCK_EX);
+
+    }
+
+    /**
+     * Downloads the recipe given the project type
+     * 
+     * @param string $type Project type (e.g. facebook, blank)
+     * 
+     * @return void
+     */
+    protected function downloadRecipe(string $type): void
+    {
+        switch($type) {
+            case "blank":
+                $this->createBlankProject();
+                break;
+            case "basic":
+                $this->downloadAndExtract('https://github.com/pho-recipes/Basic/archive/master.zip');
+                break;
+            case "graphjs":
+                $this->downloadAndExtract('https://github.com/pho-recipes/Web/archive/master.zip');
+                break;
+            case "twitter-simple":
+                $this->downloadAndExtract('https://github.com/pho-recipes/Twitter-simple/archive/master.zip');
+                break;
+            case "twitter-full":
+                $this->downloadAndExtract('https://github.com/pho-recipes/Twitter-full/archive/master.zip');
+                break;
+            case "facebook":
+                $this->downloadAndExtract('https://github.com/pho-recipes/Facebook/archive/master.zip');
+                break;
+        }
+    }
+
+    /**
+     * Downloads the given Recipe from Github and extracts it to destination
+     * 
+     * @param string $urlToDownload
+     * 
+     * @return void
+     */
+    protected function downloadAndExtract(string $urlToDownload): void
+    {
+        $this->io->text(['Building your Project...']);
+        $fileDestination = $this->app_name."/tmpfile.zip";
+        // $fileDestinationEx = $this->app_name."/pho-project-tmpfolder";
+        $fileDestinationEx = Utils::createTempDir();
+        if($fileDestinationEx) {
+            // Download file to our app
+            file_put_contents($fileDestination, fopen($urlToDownload, 'r'));
+            // Extract file to a temp folder
+            $unzipper  = new Unzip();
+            $filenames = $unzipper->extract($fileDestination, $fileDestinationEx);
+            $tmpdir_contents = glob($fileDestinationEx."/*");
+            $tmpdir = $tmpdir_contents[0];
+            
+            // then put the pgql files into schema/ folder
+            $files = glob($fileDestinationEx . '/*/*.pgql');
+            if(!is_dir($this->app_name . '/schema/')) {
+                mkdir($this->app_name . '/schema/');
+                mkdir($this->app_name . '/schema/Nodes/');
+                mkdir($this->app_name . '/schema/Edges/');
+            }
+            foreach ($files as $file) {
+                $fileNameSplit = explode("/", $file);
+                $fileName = end($fileNameSplit);
+                rename($file,   $this->app_name . '/schema/' . $fileName);
+            }
+            Utils::rcopy($tmpdir.DIRECTORY_SEPARATOR."Nodes", $this->app_name . '/schema/Nodes');
+            Utils::rcopy($tmpdir.DIRECTORY_SEPARATOR."Edges", $this->app_name . '/schema/Edges');
+    
+            // .compiled folder into build/ folder
+            $files = glob($fileDestinationEx . '/*/.compiled');
+            if(!is_dir($this->app_name . '/build/')) {
+                mkdir($this->app_name . '/build/');
+            }
+            
+            foreach ($files as $file) {
+                Utils::rcopy ($file,   $this->app_name . '/build/');
+            }
+            // delete the zip and temp directory
+            unlink($fileDestination);
+            Utils::dirDel($fileDestinationEx);
+        }
+        else {
+            $this->io->text(['Unable to Create Project (not able to create temp folder)']);
+            exit(0);
+        }
+    }
+
+    /**
+     * Create a blank Pho project
+     * 
+     * @return void
+     */
+    protected function createBlankProject(): void 
+    {
+        $this->io->text(['Building your Project...']);
+        if(!is_dir($this->app_name . '/schema/')) {
+            mkdir($this->app_name . '/schema/');
+        }
+        if(!is_dir($this->app_name . '/build/')) {
+            mkdir($this->app_name . '/build/');
+        }
     }
 }

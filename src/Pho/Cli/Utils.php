@@ -11,6 +11,10 @@
 
 namespace Pho\Cli;
 
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+
 /**
  * Various toolbelt methods to use within Pho\Cli context.
  * 
@@ -18,6 +22,13 @@ namespace Pho\Cli;
  */
 class Utils 
 {
+    /**
+     * Helps locate Pho Networks app directory structure
+     * 
+     * @see isPhoDir
+     */
+    const PHOFILE = ".phonetworks";
+
     /**
      * Recursively copy files from one directory to another
      * 
@@ -86,5 +97,54 @@ class Utils
         foreach ( $ri as $file ) {
             $file->isDir() ?  \rmdir($file) : \unlink($file);
         }
+        // Remove main directory
+        \rmdir($dir);
+    }
+
+    /**
+     * Checks if current working directory is a Pho app directory
+     * 
+     * @return bool
+     */
+    public static function isPhoDir(): bool
+    {
+        $file = getcwd() . DIRECTORY_SEPARATOR . static::PHOFILE;
+        return \file_exists($file);
+    }
+
+    /**
+     * Makes sure current working directory is a Pho app directory
+     * 
+     * Shows an error message if not
+     * 
+     * @return void
+     */
+    public static function checkPhoDir(InputInterface $input, OutputInterface $output): void
+    {
+        if(static::isPhoDir()) {
+            return; 
+        }
+        $io = new SymfonyStyle($input, $output);
+        $io->error("Can't locate Pho directory structure");
+        exit(1);
+    }
+
+    /**
+     * Creates a temp dir with pho prefix
+     * 
+     * @return string Filename
+     * @throws Exception Filesystem error with no permissions
+     */
+    public static function createTempDir():  string
+    {
+        $tempfile=tempnam(sys_get_temp_dir(), 'pho');
+        if (file_exists($tempfile)) {
+            unlink($tempfile);
+        }
+        mkdir($tempfile);
+        if (is_dir($tempfile)) {
+            return $tempfile;
+        }
+        throw new \Exception("Filesystem error");
     }
 }
