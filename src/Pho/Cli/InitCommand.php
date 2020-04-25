@@ -48,12 +48,16 @@ class InitCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->io = new SymfonyStyle($input, $output);
-        $this->app_name = $this->io->ask('App Name (no dashes or spaces)');
+        $this->app_name = $this->io->ask('App Name (no dashes or spaces)', null,  function ($response) {
+            if (empty($response)) {
+                throw new \RuntimeException('App Name cannot be empty.');
+            }
+        
+            return $response;
+        });
         //error_log($this->app_name);
         $desc = $this->io->ask('Describe the app in a short sentence');
         $type = $this->io->choice('App Template', ['blank', 'basic', 'graphjs', 'twitter-simple', 'twitter-full', 'facebook', 'custom']);
-        
-        $root = dirname(dirname(dirname(__DIR__)));
 
         $source = $this->getSkeletonDir();
 
@@ -106,6 +110,7 @@ class InitCommand extends Command
      */
     protected function getSkeletonDir(): string
     {
+        $root = dirname(dirname(dirname(__DIR__)));
         $phar = \Phar::running();
         if(empty($phar))
             return $root . DIRECTORY_SEPARATOR . "data" . DIRECTORY_SEPARATOR . "skeleton";
@@ -133,8 +138,20 @@ class InitCommand extends Command
     {
         $env_file = $destination . DIRECTORY_SEPARATOR . ".env";
         $contents = file_get_contents($env_file);
-        $username = $this->io->ask('Founder Username', "admin");
-        $password = $this->io->ask('Founder Password');
+        $username = $this->io->ask('Founder Username', "admin", function ($response) {
+            if (empty($response)) {
+                throw new \RuntimeException('Username cannot be empty.');
+            }
+        
+            return $response;
+        });
+        $password = $this->io->askHidden('Founder Password',  function ($response) {
+            if (empty($response)) {
+                throw new \RuntimeException('Password cannot be empty.');
+            }
+        
+            return $response;
+        });
         $email = "";
         $params = "{$username}::{$password}";
         $graph_class = "";
@@ -159,9 +176,9 @@ class InitCommand extends Command
             case "custom":
                 $email = $this->io->ask('Founder Email');
                 $contents = $this->dot_phocli;
-                $contents = str_replace("{username}", $username);
-                $contents = str_replace("{password}", $password);
-                $contents = str_replace("{email}", $email);
+                $contents = str_replace("{username}", $username, $contents);
+                $contents = str_replace("{password}", $password, $contents);
+                $contents = str_replace("{email}", $email, $contents);
                 file_put_contents($env_file, "\n\n".$contents, LOCK_EX|FILE_APPEND);
                 return; // DO NOT CONTINUE
         }
@@ -208,7 +225,8 @@ class InitCommand extends Command
                 break;
             case "custom":
                 $tarball = $this->io->ask('Custom Project\'s Path or Github URL');
-                if(preg_match('/^https\:\/\/github\.com\/[^/]+\/[^/]+\/archive\/master\.zip', $tarball)) {
+                if(preg_match('/^https\:\/\/github\.com\/[^\/]+\/[^\/]+/', $tarball)) {
+                    $tarball .= "/archive/master.zip";
                     $this->downloadAndExtract($tarball);
                 }
                 elseif(file_exists($tarball)) {
@@ -300,7 +318,7 @@ class InitCommand extends Command
         // Download file to our app
         file_put_contents($fileDestination, fopen($urlToDownload, 'r'));
             
-        
+        $this->extract($fileDestination);
 
     }
 
