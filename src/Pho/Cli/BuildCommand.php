@@ -33,7 +33,7 @@ class BuildCommand extends Command
     {
         $this
             ->setName('build')
-            ->setDescription('Builds graphql schema into executable Pho');
+            ->setDescription('Builds the GraphQL schema');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
