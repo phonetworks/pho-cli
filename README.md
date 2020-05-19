@@ -39,6 +39,15 @@ Compiles the schema files. This must be run in a project folder that was initial
 > Usage: ```bin/pho.php build``` 
 
 
+**compile**
+For advanced users only. Same as above ("build"). Except this is a more flexible version, as it can be run from anywhere, as long you specify the source and the destination folders.
+
+> Usage: ```bin/pho.php compile [source folder] [destination folder] [extension]```
+
+* **Source Folder:** The directory where the graphql schema resides.
+* **Destination Folder:** The directory where the compiled Pho files will go.
+* **Extension:** (Optional) Compiles the given file extension. The default value is .pgql
+
 ## License
 
 MIT, see [LICENSE](https://github.com/phonetworks/pho-cli/blob/master/LICENSE).
