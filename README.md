@@ -48,9 +48,9 @@ For advanced users only. Same as above ("build"). Except this is a more flexible
 
 > Usage: ```bin/pho.php compile [source folder] [destination folder] [extension]```
 
-* **Source Folder:** The directory where the graphql schema resides.
-* **Destination Folder:** The directory where the compiled Pho files will go.
-* **Extension:** (Optional) Compiles the given file extension. The default value is .pgql
+* Source Folder: The directory where the graphql schema resides.
+* Destination Folder: The directory where the compiled Pho files will go.
+* Extension: (Optional) Compiles the given file extension. The default value is .pgql
 
 ## License
 
