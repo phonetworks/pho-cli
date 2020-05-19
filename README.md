@@ -25,7 +25,11 @@ composer install
 
 You must have [Redis](https://redis.io/) and [Neo4J](https://neo4j.com/) installed for the projects to run on your system.
 
-## Available Commands
+## Tutorial 
+
+Check out https://ideasforfree.org/2020/05/08/how-to-create-a-tinder-clone-in-pho/ for a tutorial with instructions on how to create a Tinder clone using Phở Networks and pho-cli.
+
+Available commands are:
   
 **init**
 Initializes a new project. This will start a dialog where you define the app name, description as well as the template of your project based on [Phở recipes](https://github.com/pho-recipes). 
