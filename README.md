@@ -8,7 +8,7 @@ A command line interface for the Phở stack. Allows you to build GraphQL files,
 
 ## Getting Started
 
-Phở-CLI is based on PHP 7.2+ 
+Pho-CLI is based on PHP 7.2+ 
 
 The preferred method of installation is to use the pho-cli [PHAR](https://github.com/phonetworks/pho-cli/releases/download/0.2/pho.phar) which can be downloaded from the most recent Github Release. This method ensures you will not have any dependency conflict issue.
 
